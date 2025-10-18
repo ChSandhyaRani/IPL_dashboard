@@ -1,0 +1,25 @@
+.latest-match {
+  background-color: #0f172a;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+  color: #ffffff;
+}
+
+.latest-match-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.team-logo {
+  height: 120px;
+}
+
+.match-info {
+  margin-top: 10px;
+}
+
+.divider {
+  border: 1px solid #475569;
+}

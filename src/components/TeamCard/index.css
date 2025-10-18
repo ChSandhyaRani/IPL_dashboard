@@ -1,0 +1,27 @@
+.team-card-link {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.team-card {
+  background-color: #ffffff33;
+  border: 1px solid #ffffff;
+  border-radius: 10px;
+  width: 250px;
+  margin: 10px;
+  padding: 15px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.team-logo {
+  height: 80px;
+  width: 80px;
+}
+
+.team-name {
+  font-family: 'Bree Serif';
+  font-size: 18px;
+}
