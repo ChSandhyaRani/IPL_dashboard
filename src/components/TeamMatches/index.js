@@ -1,6 +1,14 @@
 import {Component} from 'react'
-import {useParams} from 'react-router-dom'
+import {withRouter, useParams} from 'react-router-dom'
 import Loader from 'react-loader-spinner'
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts'
 import LatestMatch from '../LatestMatch'
 import MatchCard from '../MatchCard'
 import './index.css'
@@ -21,6 +29,7 @@ class TeamMatches extends Component {
     const {match} = this.props
     const {params} = match
     const {id} = params
+
     const response = await fetch(`https://apis.ccbp.in/ipl/${id}`)
     const data = await response.json()
 
@@ -62,12 +71,65 @@ class TeamMatches extends Component {
     })
   }
 
+  handleBack = () => {
+    const {history} = this.props
+    history.push('/')
+  }
+
   renderTeamMatches = () => {
     const {teamBannerUrl, latestMatch, recentMatches} = this.state
+
+    const wins = recentMatches.filter(match => match.matchStatus === 'Won')
+      .length
+    const losses = recentMatches.filter(match => match.matchStatus === 'Lost')
+      .length
+    const draws = recentMatches.filter(match => match.matchStatus === 'Draw')
+      .length
+
+    const statsData = [
+      {name: 'Wins', value: wins, color: '#4CAF50'},
+      {name: 'Losses', value: losses, color: '#F44336'},
+      {name: 'Draws', value: draws, color: '#FFC107'},
+    ]
+
     return (
       <div className="team-matches-content">
+        {/* Back Button */}
+        <button type="button" className="back-button" onClick={this.handleBack}>
+          ← Back to Home
+        </button>
+
+        {/* Team Banner */}
         <img src={teamBannerUrl} alt="team banner" className="team-banner" />
+
+        {/* Latest Match */}
         <LatestMatch details={latestMatch} />
+
+        {/* Pie Chart Section */}
+        <div className="pie-chart-container">
+          <h3 className="chart-title">Match Statistics</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart data-testid="pieChart">
+              <Pie
+                data={statsData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={100}
+                label
+              >
+                {statsData.map(entry => (
+                  <Cell key={entry.name} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Recent Matches */}
         <ul className="recent-matches-list">
           {recentMatches.map(eachMatch => (
             <MatchCard key={eachMatch.id} matchDetails={eachMatch} />
@@ -93,10 +155,10 @@ class TeamMatches extends Component {
   }
 }
 
-// ✅ Wrapper to access URL params in class component
+// ✅ Wrapper for hooks
 const TeamMatchesWrapper = props => {
   const params = useParams()
-  return <TeamMatches {...props} params={params} />
+  return <TeamMatches {...props} match={{params}} />
 }
 
-export default TeamMatchesWrapper
+export default withRouter(TeamMatchesWrapper)
